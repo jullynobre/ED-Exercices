@@ -1,23 +1,24 @@
 #include <stdio.h>
 
-void sendFromAToB(int *a, int *b, int n, int *station, int *stationCount, int position, int car){
+void sendFromAToB(int *a, int *b, int n, int *station, int *stationCount, int carIndex, int carValue){
 	int i;
-	if(car < n)
+	if(carValue < n)
 	{
 		//Check to see if there are any car in front of him
-		if(*(a + car) == 0)
+		if(*(a + carValue) == 0)
 		{
-			*(b + position) = car;
-			*(a + car - 1) = 0;
+			*(b + carIndex) = carValue;
+			*(a + carValue - 1) = 0;
 		}else
 		{
-			for(i = car; i < n; i++){
+			i = carValue;
+			while((i < n) && *(a + i) != 0)
+			{
 				*(station + *stationCount) = *(a + i);
 				*(a + i) = 0;
 				*(stationCount)++;
+				i++;
 			}
-			*(b + position) = car;
-			*(a + car - 1) = 0;
 		}
 
 	}
@@ -38,17 +39,21 @@ int main(){
 			b = malloc(n*sizeof(int));
 			station = malloc(n*sizeof(int));
 			
-			//Fills A and B
-			for(i = 0; i < n; i++)
+			scanf("%d", &n);
+			if(n != 0)
 			{
-				*(a + n - i - 1) = i + 1;
-				scanf("%d", (b + i));
+				*(a + n - 2) = 1;
+				*(b) = n;
+				//Fills A and B 
+				for(i = 1; i < n; i++)
+				{
+					*(a + n - i - 1) = i + 1;
+					scanf("%d", (b + i));
+				}
+
+				//The first car of the sequence is always possible
+				sendFromAToB(a, b, n, station, 0, 0, *(b + n - 1));
 			}
-
-			//The first car of the sequence is always possible
-			sendFromAToB(a, b, n, station, 0, 0, *(b + n - 1));
-
-
 		} else 
 		{
 			scanf("%d", &n);			
