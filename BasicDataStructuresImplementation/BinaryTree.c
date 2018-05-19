@@ -16,24 +16,39 @@ typedef struct aux {
 
 typedef NODE* POINTER;
 
-//Function that initialize a tree; Outher functionalities can be added to this function in future
+//Function that initialize a tree; Other functionalities can be added to this function in future
 POINTER init(){
 	return(NULL);
 }
 
-int main(){
-	POINTER r = init();
-	return(0);
-}
-
+//Return the root of tree that node were inserted
 POINTER insert(POINTER root, POINTER node){
 	if(root == NULL){
 		return(node);
 	}
 	if(node->key < root->key){
 		root->left = insert(root->left, node);
-	}else{
+	} else{
 		root->right = insert(root->right, node);
 	}
+	//Ignore equal key
 	return(root);
+}
+
+//Return a new node with the specified key
+POINTER newNode(TYPEKEY key){
+	POINTER node = (POINTER) malloc(sizeof(POINTER));
+	node->left = NULL;
+	node->right = NULL;
+	node->key = key;
+
+	return(node);
+}
+
+int main(){
+	POINTER tree = init();
+	POINTER node = newNode(25);
+	tree = insert(tree, node);
+
+	return(0);
 }
