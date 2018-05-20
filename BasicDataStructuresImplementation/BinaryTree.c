@@ -52,6 +52,13 @@ POINTER search(TYPEKEY key, POINTER root){
 	return root;
 }
 
+int countNodes( POINTER root ){
+	if (root == NULL) { 
+		return(0); 
+	}
+	return (countNodes(root->left) + 1 + countNodes(root->right));
+}
+
 int main(){
 	POINTER tree = init();
 	POINTER node = newNode(25);
