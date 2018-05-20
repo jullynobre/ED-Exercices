@@ -45,6 +45,13 @@ POINTER newNode(TYPEKEY key){
 	return(node);
 }
 
+POINTER search(TYPEKEY key, POINTER root){
+	if(root == NULL){ return(NULL); }
+	else if(key < root->key){ return( search(key, root->left) ); }
+	else if(key > root->key){ return( search(key, root->right) ); }
+	return root;
+}
+
 int main(){
 	POINTER tree = init();
 	POINTER node = newNode(25);
