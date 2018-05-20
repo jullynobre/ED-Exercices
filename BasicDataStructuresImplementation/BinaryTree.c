@@ -45,6 +45,7 @@ POINTER newNode(TYPEKEY key){
 	return(node);
 }
 
+//Return the node for specified key
 POINTER search(TYPEKEY key, POINTER root){
 	if(root == NULL){ return(NULL); }
 	else if(key < root->key){ return( search(key, root->left) ); }
@@ -59,10 +60,45 @@ int countNodes( POINTER root ){
 	return (countNodes(root->left) + 1 + countNodes(root->right));
 }
 
+//Return the pointer of the searched node. RootNode recieve the pointer for his root node
+POINTER searchNode(POINTER root, TYPEKEY key, POINTER *rootNode){
+	POINTER actual = root;
+	*rootNode = NULL;
+	while (actual){
+		if( actual->key == key){ return(actual); }
+		*rootNode = actual;
+		if( key < actual->key ){ actual = actual->left; }
+		else{ actual = actual->right; }
+	}
+	return(NULL);
+}
+
+void printTree(POINTER root){
+	if(root != NULL){
+		printf("%i", root->key);
+		printf("(");
+		printTree(root->left);
+		printTree(root->right);
+		printf(")");
+	}
+}
+
 int main(){
 	POINTER tree = init();
-	POINTER node = newNode(25);
-	tree = insert(tree, node);
+
+	POINTER n1 = newNode(25);
+	tree = insert(tree, n1);
+	POINTER n2 = newNode(12);
+	tree = insert(tree, n2);
+	POINTER n3 = newNode(13);
+	tree = insert(tree, n3);
+	POINTER n4 = newNode(26);
+	tree = insert(tree, n4);
+
+	printf("%d\n", countNodes(tree));
+	printTree(tree);
+
+	system("pause");
 
 	return(0);
 }
