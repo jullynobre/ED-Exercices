@@ -61,16 +61,50 @@ int countNodes( POINTER root ){
 }
 
 //Return the pointer of the searched node. RootNode recieve the pointer for his root node
-POINTER searchNode(POINTER root, TYPEKEY key, POINTER *rootNode){
+POINTER searchNode(POINTER root, TYPEKEY key, POINTER *dad){
 	POINTER actual = root;
-	*rootNode = NULL;
+	*dad = NULL;
 	while (actual){
 		if( actual->key == key){ return(actual); }
-		*rootNode = actual;
+		*dad = actual;
 		if( key < actual->key ){ actual = actual->left; }
 		else{ actual = actual->right; }
 	}
 	return(NULL);
+}
+
+POINTER removeNode(POINTER root, TYPEKEY key){
+	POINTER dad, node, p, q;
+	node = searchNode(root, key, &dad);
+
+	if(node == NULL) return(root);
+
+	if(!node->left || !node->right){ //if the node removed has a maximum of one child
+		if(!node->left) q = node->right;
+		else q = node->left;
+	}
+	else{ //If has two child
+		p = node;
+		q = node->left;
+		while(q->right){
+			p = q;
+			q = q->right;
+		}
+		//If the substitute parent is or isn't the node removed
+		if(p != node){
+			p->right = q->left;
+			q->left = node->left;
+		}
+		q->right = node->right;
+	}
+	if (!dad){ //If remove node is the root node
+		free(node);
+		return(q);
+	}
+	if(ch < dad->key) dad->left = q;
+	else dad->right = q;
+	free(node);
+	return(root);
 }
 
 void printTree(POINTER root){
