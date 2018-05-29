@@ -101,7 +101,7 @@ POINTER removeNode(POINTER root, TYPEKEY key){
 		free(node);
 		return(q);
 	}
-	if(ch < dad->key) dad->left = q;
+	if(key < dad->key) dad->left = q;
 	else dad->right = q;
 	free(node);
 	return(root);
