@@ -49,9 +49,24 @@ bool insert(POINTER root, TYPEKEY newKey, TYPEKEY parentKey){
 	return true;
 }
 
+void printTree(POINTER root){
+	if (root == NULL) return;
+	printf("%d (", root->key);
+
+	POINTER child = root->child;
+	while(child){
+		printTree(child);
+		child = child->sibilin;
+	}
+
+	printf(")");
+}
+
 int main(){
 	
 	POINTER root = newNode(8);
+	printf("%d\n", insert(root, 7, 8));
 
+	printTree(root);
 	return(0);
 }
