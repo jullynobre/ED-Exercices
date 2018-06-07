@@ -28,13 +28,30 @@ POINTER newNode(TYPEKEY key){
 	return(newNode);
 }
 
+POINTER searchKey(POINTER root, TYPEKEY key){
+	return(NULL);
+}
+
+bool insert(POINTER root, TYPEKEY newKey, TYPEKEY parentKey){
+	POINTER parent = searchKey(root, parentKey);
+
+	if(!parent) return(false);
+
+	POINTER node = newNode(newKey);
+	POINTER child = parent->child;
+	if(!child) parent->child = node;
+	else{
+		while(child->sibilin)
+			child = child->sibilin;
+		child->sibilin = node;
+	}
+
+	return true;
+}
 
 int main(){
 	
 	POINTER root = newNode(8);
-	printf("teste");
-
-	//system("pause");
 
 	return(0);
 }
