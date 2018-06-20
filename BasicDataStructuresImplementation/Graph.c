@@ -38,6 +38,28 @@ GRAPH *newGraph(int numberOfVertices){
     return g;
 }
 
+ADJACENCY *newAdjacency(int vertice, int time){
+    ADJACENCY *temp = (ADJACENCY *) malloc(sizeof(ADJACENCY));
+    temp->vertice = v;
+    temp->time = time;
+    temp->next = NULL;
+    return(temp);
+}
+
+//This method creates a directed edge
+bool createEdge(GRAPH *gr, int v1, int v2, int time){
+    if(!gr) return(false);
+    if((v1 < 0) || (v1 >= gr->numberOfVertices)) return(false);
+    if((v2 < 0) || (v2 >= gr->numberOfVertices)) return(false);
+
+    ADJACENCY *new = newAdjacency(v2, time);
+    new->next = gr->adjadcencies[v1].head;
+    gr->adjadcencies[v1].head = new;
+    gr->edges++;
+
+    return(true);
+}
+
 int main(){
 
     return 1;
