@@ -13,7 +13,7 @@ typedef struct adjacency {
 } ADJACENCY;
 
 typedef struct vertice {
-    /* data */
+    /* data goes here */
 
     ADJACENCY *head;
 } VERTICE;
@@ -21,8 +21,22 @@ typedef struct vertice {
 typedef struct graph {
     int vertices;
     int edges;
-    VERTICE *adj;
+    VERTICE *adjadcencies;
 } GRAPH;
+
+GRAPH *newGraph(int numberOfVertices){
+    GRAPH *g = (GRAPH *) malloc(sizeof(GRAPH));
+    g->vertices = numberOfVertices;
+    g->edges = 0;
+    g->adjadcencies = (VERTICE *) malloc(numberOfVertices * sizeof(VERTICE));
+
+    int i;
+    for(i = 0; i < numberOfVertices; i++){
+        g->adjadcencies[i].head = NULL;
+    }
+    
+    return g;
+}
 
 int main(){
 
