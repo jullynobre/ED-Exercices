@@ -60,6 +60,21 @@ bool createEdge(GRAPH *gr, int v1, int v2, int time){
     return(true);
 }
 
+void printGraph(GRAPH* gr){
+    printf("Vertices: %d \nEdges: %d \n\n", gr->vertices, gr->edges);
+
+    int i;
+    for(i = 0; i < gr->vertices; i++){
+        printf("Vertice: %d \n", i);
+        ADJACENCY *adj = gr->adjadcencies[i].head;
+        while(adj){
+            print("v%d(%d) ", adj->vertice, adj->time);
+            adj = adj->next;
+        }
+        printf("\n");
+    }
+}
+
 int main(){
 
     return 1;
