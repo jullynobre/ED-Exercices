@@ -1,167 +1,135 @@
-/*Dijkstra's algorithm to find the shortest distance between two vertices */
+/*
+
+2.
+    e1 ab
+    e2 bc
+    e3 cg
+    e4 gd
+    e5 da
+    e6 ab
+    e7 bd
+    e8 dc
+    e9 ca
+
+    a. Caminhos não cíclicos de a até g
+        e5 - e4
+        e5 - e8 - e3
+        e5 - e7 - e2 - e3+
+        e7 - e3
+        e7 - e8 - e4
+        e6 - e2 - e3
+        e6 - e7 - e4
+        e1 - e2 - e3
+        e1 - e7 - e4
+    b. Caminho não cíclicos de g até b
+        e3 - e2
+        e3 - e9 - e6
+        e3 - e8 - e5 - e6
+        e4 - e7
+        e4 - e8 - e2
+        e4 - e8 - e9 - e6
+        e4 - e5 - e6
+        e4 - e5 - e9 - e2
+    c. Grau dos nós b, d e g
+        b = 4
+        d = 4
+        g = 2
+
+3. Nós adjacentes de a, d e g
+    a = b, c, d
+    d = a, b, c, g
+    g = c, d
+4. Seguência dos nós visitados, partindo do vértice a
+    b, c, g, d, a, b, d, c, a
+
+*/      
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 
-#define true 1
-#define false 0
+typedef struct edge {
+    char vertice1;
+    char vertice2;
+} EDGE;
 
-typedef int bool;
+EDGE *newEdge(char v1, char v2){
+    EDGE *aux = (EDGE *) malloc(sizeof(EDGE));
+    aux->vertice1 = v1;
+    aux->vertice2 = v2;
 
-typedef struct adjacency {
-    int vertice;
-    int time;
-    struct adjacency *next;
-} ADJACENCY;
-
-typedef struct vertice {
-    /* data goes here */
-
-    ADJACENCY *head;
-} VERTICE;
-
-typedef struct graph {
-    int vertices;
-    int edges;
-    VERTICE *adjadcencies;
-} GRAPH;
-
-GRAPH *newGraph(int numberOfVertices){
-    GRAPH *g = (GRAPH *) malloc(sizeof(GRAPH));
-    g->vertices = numberOfVertices;
-    g->edges = 0;
-    g->adjadcencies = (VERTICE *) malloc(numberOfVertices * sizeof(VERTICE));
-
-    int i;
-    for(i = 0; i < numberOfVertices; i++){
-        g->adjadcencies[i].head = NULL;
-    }
-    
-    return g;
-}
-
-ADJACENCY *newAdjacency(int vertice, int time){
-    ADJACENCY *temp = (ADJACENCY *) malloc(sizeof(ADJACENCY));
-    temp->vertice = vertice;
-    temp->time = time;
-    temp->next = NULL;
-    return(temp);
-}
-
-//This method creates a directed edge
-bool createEdge(GRAPH *gr, int v1, int v2, int time){
-    if(!gr) return(false);
-    if((v1 < 0) || (v1 >= gr->vertices)) return(false);
-    if((v2 < 0) || (v2 >= gr->vertices)) return(false);
-
-    ADJACENCY *new = newAdjacency(v2, time);
-    new->next = gr->adjadcencies[v1].head;
-    gr->adjadcencies[v1].head = new;
-    gr->edges++;
-
-    return(true);
-}
-
-void initGraph(GRAPH *g, int *d, int *p, int s){
-    int v;
-    for(v = 0; v < g->vertices; v++){
-        d[v] = INT_MAX/2;
-        p[v] = -1;
-    }
-    d[s] = 0;
-}
-
-void relax(GRAPH *g, int *d, int *p, int u, int v){
-    ADJACENCY *ad = g->adjadcencies[u].head;
-    
-    while(ad && ad->vertice != v) ad = ad->next;
-
-    if(ad){
-        if(d[v] > d[u] + ad->time){
-            d[v] = d[u] + ad->time;
-            p[v] = u;
-
-            printf("Previus v%d = v%d\n", v, u);
-        }
-    }
-}
-
-void printGraph(GRAPH* gr){
-    printf("Vertices: %d \nEdges: %d \n\n", gr->vertices, gr->edges);
-
-    int i;
-    for(i = 0; i < gr->vertices; i++){ 
-        printf("v(%d): ", i);
-        ADJACENCY *adj = gr->adjadcencies[i].head;
-        while(adj){
-            printf("v%d(%d) ", adj->vertice, adj->time);
-            adj = adj->next;
-        }
-        printf("\n");
-    }
-}
-
-bool hasOpen(GRAPH *gr, int *open){
-    int i;
-    for (i = 0; i < gr->vertices; i++) 
-        if(open[i]) return(true);
-    return(false);
-}
-
-int shorterDistance(GRAPH *gr, int *open, int *d){
-    int i;
-    for (i = 0; i < gr->vertices; i++)  if(open[i]) break;
-    if(i == gr->vertices) return(-1);
-
-    int shorter = i;
-    for(i = shorter + 1; i < gr->vertices; i++)
-        if(open[i] && (d[shorter] > d[i]))
-            shorter = i;
-
-    return(shorter);
-}
-
-int *dijkstra(GRAPH* gr, int s){
-    int *d = (int *) malloc(gr->vertices * sizeof(int));
-    int p[gr->vertices];
-    bool open[gr->vertices];
-
-    initGraph(gr, d, p, s);
-
-    int i;
-    for (i = 0; i < gr->vertices; i++)  open[i] = true;
-
-    while(hasOpen(gr, open)){
-        int u = shorterDistance(gr, open, d);
-        open[u] = false;
-
-        ADJACENCY *adj = gr->adjadcencies[u].head;
-        while(adj){
-            relax(gr, d, p, u, adj->vertice);
-            adj = adj->next;
-        }
-    }
-
-    return d;
+    return aux;
 }
 
 int main(){
-    GRAPH *gr = newGraph(5);
-    createEdge(gr, 0, 1, 2);
-    createEdge(gr, 1, 2, 4);
-    createEdge(gr, 2, 0, 12);
-    createEdge(gr, 2, 4, 40);
-    createEdge(gr, 3, 1, 3);
-    createEdge(gr, 4, 3, 8);
+    EDGE *edges[9] = {
+        newEdge('a', 'b'), 
+        newEdge('b', 'c'), 
+        newEdge('c', 'g'), 
+        newEdge('g', 'd'), 
+        newEdge('d', 'a'),
+        newEdge('a', 'b'),
+        newEdge('b', 'd'), 
+        newEdge('d', 'c'), 
+        newEdge('c', 'a')
+    };
 
-    printGraph(gr);
+    int conec[5] = {0, 0, 0, 0, 0};
 
-    int *r = dijkstra(gr, 0);
+    char node = 'a';
 
-    int i;
-    for(i = 0; i < gr->vertices; i++)
-        printf("D(v0 -> v%d) = %d\n", i, r[i]);
+    int i, j;
+    for(i = 0; i < 9; i++){
+        char node2 = ' ';
 
+        if( edges[i]->vertice1 == node ) node2 = edges[i]->vertice2;
+        else if ( edges[i]->vertice2 == node ) node2 = edges[i]->vertice1;
+        
+        if(node2 != ' '){
+            switch (node2){
+                case 'a':
+                    conec[0] = 1;
+                    break;
+                case 'b':
+                    conec[1] = 1;
+                    break;
+                case 'c':
+                    conec[2] = 1;
+                    break;
+                case 'd':
+                    conec[3] = 1;
+                    break;
+                case 'g':
+                    conec[4] = 1;
+                    break;
+            }
+        }
+    }
+
+    switch (node){
+        case 'a':
+            conec[0] = 1;
+            break;
+        case 'b':
+            conec[1] = 1;
+            break;
+        case 'c':
+            conec[2] = 1;
+            break;
+        case 'd':
+            conec[3] = 1;
+            break;
+        case 'g':
+            conec[4] = 1;
+            break;1
+    }
+    
+    j = 1;
+    for(i = 0; i < 5; i++)
+        if(!conec[i]) j = 0;
+        
+    
+    if(j) printf("\nv%c está conectado com todos os outros vértices\n", node);
+    else printf("\nv%c NÂO está conectado com todos os outros vértices\n", node);
+    
     return 1;
 }
