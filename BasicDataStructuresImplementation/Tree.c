@@ -29,6 +29,16 @@ POINTER newNode(TYPEKEY key){
 }
 
 POINTER searchKey(POINTER root, TYPEKEY key){
+	if(root == NULL) return(NULL);
+	if(root->key == key) return root;
+
+	POINTER child = root->child;
+	while(child){
+		POINTER aux = searchKey(child, key);
+		if(aux) return aux;
+
+		child = child->sibilin;
+	}
 	return(NULL);
 }
 
