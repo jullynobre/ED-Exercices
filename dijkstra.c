@@ -81,8 +81,6 @@ void relax(GRAPH *g, int *d, int *p, int u, int v){
         if(d[v] > d[u] + ad->time){
             d[v] = d[u] + ad->time;
             p[v] = u;
-
-            printf("Previus v%d = v%d\n", v, u);
         }
     }
 }
@@ -91,7 +89,7 @@ void printGraph(GRAPH* gr){
     printf("Vertices: %d \nEdges: %d \n\n", gr->vertices, gr->edges);
 
     int i;
-    for(i = 0; i < gr->vertices; i++){ 
+    for(i = 0; i < gr->vertices; i++){
         printf("v(%d): ", i);
         ADJACENCY *adj = gr->adjadcencies[i].head;
         while(adj){
@@ -155,7 +153,7 @@ int main(){
     createEdge(gr, 3, 1, 3);
     createEdge(gr, 4, 3, 8);
 
-    printGraph(gr);
+    //printGraph(gr);
 
     int *r = dijkstra(gr, 0);
 
